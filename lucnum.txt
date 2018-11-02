@@ -1,0 +1,34 @@
+LOADMEM
+# r1 = location 1 in row
+# r2 = location 2 in row
+# r3 = num 1 (override to new Fib number)
+# r4 = num2
+# r5 = next place in row
+# r6 = increment value = 1
+
+ori r7 1		# load increment value into r7
+ori r1 11		# load location num1 in row in r1
+add r2 r1 r7		# calc pos. 2 depending op pos 1 (pos2 = pos1 + 1) and place in r2
+add r5 r2 r7		# calc pos next element depending on pos 2 (nextpos = pos2 + 1) and store in r5
+
+lw r1 r3 0		# load num 1 into r3
+lw r2 r4 0		# load num 2 into r4
+
+add r3 r3 r4		# calc next fib number and store in r3
+
+sw r5 r3 0		# store fib number in datamem
+
+add r1 r1 r7		# move place first num by 1
+
+zero r3			# reset r3
+zero r4			# reset r4
+
+jr r0 2			# jump back to beginning of loop (first 2 instructions aren't needed anymore)
+
+DATAMEM
+2
+1
+CHECKMEM
+END
+
+

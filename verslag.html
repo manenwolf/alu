@@ -1,0 +1,75 @@
+<html>
+
+<head>
+<title>Verslag</title>
+<!-- Het "u" element (underline) is geherdefinieerd voor overline -->
+<style type="text/css">u {text-decoration: overline;}</style>
+
+</head>
+
+<body>
+
+<h1>Verslag</h1>
+<p><b>Titel:</b> <i>Datapath (2) & Using the Datapath</i></p>
+<p>Dit verslag werd opgesteld door:<br />
+<ul>
+<li><b>Naam:</b> <i>Dieter De Wilde</i><br />
+<b>Studentennummer:</b> <i>20131121</i><br />
+<b>Email adres:</b> <i>dieter.dewilde@student.uantwerpen.be</i>
+</li>
+
+</ul>
+<b>Aantal man-uren besteed:</b> <i>15-20 uur</i><br />
+<b>Moeilijkheidsgraad:</b> <i>7</i> /10 (1 is heel makkelijk, 10 is heel moeilijk)</p>
+
+<h2>Inhoud van de oplossing</h2>
+<p>De oplossing bestaat uit de volgende bestanden (geef alle bestanden op):</p>
+<ul>
+<li><a href="project4-FSM.circ">Project4-FSM</a>: Circuit hulp-bestand</li>
+<li><a href="SD_Group29v7CleanUp.circ">SD_Group29v7CleanUp</a>: Circuit bestand voor project 6</li>
+<li><a href="Project2.circ">Project2</a>: Circuit hulp-bestand</li>
+<li><a href="ALU_Group29_v2.circ">ALU_Group29_v2</a>: Circuit hulp-bestand</li>
+</ul>
+
+<h2>Project 6: Datapath(2)</h2>
+<h3>Program Counter</h3>
+Het verschil met de vorige en de huidige program counter is dat we de Branch Value hebben losgekoppeld, aangezien deze waarde nu berekend zal worden door de instructie. Branch relative en absolute inputs zijn daarom ook dusdanig verdwenen aangezien deze afhankelijk zijn van welke instructie er plaats vindt. Branch Relative wordt nu bepaald door de 'branch not equal' (BNE) operatie (PC -> PC + 1 + imm) en Branch Absolute wordt nu bepaald door enerzijds de 'Jump And Link' (JAL) operatie (PC = target address) en anderzijds de 'Jump Register' (JR) operatie (Jump to address in register). De control unit is daarom zodanig ontworpen dat de multiplexers doorheen het datapad de juiste waarden aannemen om de bewerkingen op uit te voeren.<br /><br />
+
+<h3> JAL </h3>
+Wanneer er een JAL operatie plaats vindt, gaan we het huidige instruction adres+1 ( +1 want we willen met de volgende instructie verder gaan) opslaan in register 15 zodat we na een subroutine kunnen terugspringen naar de plaats waar deze opgeroepen zou zijn.<br />
+De immediate value wordt doorgegeven naar het instructieblok, aangezien deze verwijst naar waar we jumpen, en dus de volgende instructie bepaald. De control unit zorgt ervoor dat er in onze register file de waarde van de PC+1 in reg15 wordt geschreven door de desbetreffende control lines in te stellen.(WriteEnabled, reg 15 selected, ...)<br /><br />
+
+<h3> ORI </h3>
+Bij een ORI operatie gaan we de inhoud van het register met nummer $rs in een logische OR-gate sturen samen met de immediate value en dat opslaan in $rs. Onze control unit zorgt ervoor dat we kunnen lezen uit register $rs en dat de inhoud van dat register dan naar een OR-gate geleid wordt, samen met de immediate value.<br /><br />
+
+<h3> LUI </h3>
+De LUI operatie gaat in feite zijn immediate value met 8 bits naar links shiften en dat opslaan in register $rs. Hiervoor gebruiken we een simpele built-in shifter die 8x een 0 plaatst (langs rechts). Wederom zorgt de control unit ervoor dat de correcte waarden gebruikt worden.<br /><br />
+
+<h3> ORI en LUI gebruiken voor een LI operatie </h3>
+We kunnen ORI en LUI samen gebruiken om een load immediate operatie uit te voeren, waarbij de immediate 16 bits breed is. Indien we eerst de 8 most significant bits met een LUI operatie uitvoeren op bepaal register X, gevolgd door een ORI operatie met de 8 least significant bits op register X, dan zullen we in dat register de 16-bit value vinden die ontstaan is uit de immediate value van LUI en ORI operaties.
+
+<h3> JR </h3>
+De JR operatie zal ervoor zorgen dat we verder gaan met de instructie die we vinden op de plaats die bepaald wordt door de inhoud van $rs en de immediate value. De immediate value tellen we bij $rs op. 
+
+<h3> BNE </h3>
+Bij de BNE operatie zullen we indien rs != rt springen naar het current adres + 1 + immediate value. Zo kunnen we dus bepaalde instructies overslaan indien de voorwaarde niet voldaan is. Indien deze wel gelijk zijn aan mekaar, zullen we gewoon verder gaan met de instructies, er zal geen adreswijziging plaatsvinden (buiten de gewoonlijke increment van de program counter).
+
+<h3>Aanpassingen aan Control Unit en opstellen van Immediate Ciruit</h3>
+We hebben onze Control Unit moeten uitbreiden voor control lines van de nieuwe instructies en hebben deze meteen ook geherstructureerd. Een screenshot kan U hieronder bezichtigen.<br />
+<img src = "control.jpg"><br /><br />
+
+We hebben ook een nieuw circuit aangemaakt, een immdiate circuit, dat ervoor zorgt dat, afhankelijk van welke instructie er plaats vindt de juiste immediate value wordt teruggegeven. We kunnen zo 5 cases onderscheiden waarbij we 4,8 of 12 bits aan immediate value nodig hebben, al dan niet signed of unsigned. Dit is dus geabstraheerd en de output is de correcte immediate waarde. Hieronder een screenshot.<br />
+<img src = 'immediate.jpg'><br /><br />
+
+<h2>Project 7: Using the Datapath</h2>
+<h3>Finding the smallest element in an array</h3>
+<a href = "smallest.txt">Assembler Code</a><br />
+Om kleinste element in een array vinden moeten we beginnin met het beginadres van de array op te slaan. Daaruit vertrekken we onze reeks van vergelijkingen. We hebben de size van de array nodig om te weten wanneer we moeten stoppen met data te vergelijken. Telkens gaan we 2 elementen vergelijken waarvan we het kleinste eruit nemen en dat vergelijken met het tot dan nog toe kleinste element. Indien ons huidige waarde kleiner is overschrijven we het register dat de kleinste waarde houdt, indien niet, gaan we gewoon verder met onze vergelijkingen. Op het einde van de hele routine kunnen we het kleinste element vinden in het specifieke register. (We schrijven dit ook nog eens naar het datamem, vlak voor het begin van de array).
+
+<h3>Creating the sequence of Lucas' Numbers</h3>
+<a href = "lucnum.txt">Assembler Code</a><br/>
+Om de reeks van Lucas getallen te berekenen steken we de initiele waarde in het datamemory; de waarden 2 voor n=0 en de waarde 1 voor n=1. We laden deze waarden in en tellen ze op. Het resultaat steken we in een register dat geschreven zal worden op de locatie na de initiele waarden. Bij de volgende berekeningen zullen we telkens het proces van de vorige twee getallen optellen en schrijven naar het datamemory herhalen, maar telkens een plaatsje verder in ons datamemory gaan zodat we een mooie opeenvolgende reeks van Lucas' getallen krijgen.
+
+<h3>Sorting an array</h3>
+<a href = "sort.txt">Assembler Code</a><br/>
+voor dit programma gebruiken we het bubble sort algoritme. hierbij gaan we steeds alle getallen in een array afgaan en deze indien het tweede getal groter is dan het eerste verwisselen en terug schrijven. als we heel de array doorlopen zijn verklijnen we de size van de array met 1. en doen alles opnieuw tot de size gelijk wordt aan 0.

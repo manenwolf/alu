@@ -1,0 +1,61 @@
+LOADMEM
+# r1 = biggest element
+# r2 = loaded element
+# r3 = copy of r1
+# r4 = begin array
+# r5 = array tracker
+# r6 = value 1 (== increment value)
+# r7 = counter
+
+
+ori r5 27 			# Load begin of the array in r5
+ori r4 25 			# Load datalocation of 2 elements before array in r4
+ori r6 10			# Load 10 into r6
+sw r4 r6 0			# Place 10 in datamem
+
+# Beginning of Loop
+lw r4 r6 0 			# Load array size (+1, needed for correct checks) in r6
+bne r6 r7 3 			# If counter != size
+zero r2					# if counter == size, empty r2
+ori r2 23				# save location instruction after this loop (line 43)
+jr r2 0					# jump to that location
+
+zero r6				# empty r6
+ori r6 1 			# Load value 1 in r6
+
+sw r4 r1 1 			# Store smallest element in r1
+lw r4 r3 1 			# Load biggest element in r3 (aka make a copy of r1)
+
+lw r5 r2 0 			# Load next element in the array. 
+gt r3 r3 r2 			# Is r3 greater than r2? -> store answer (0 or 1) in r3.
+
+bne r3 r0 3 			# Check if lt was True or False, branch back to beginning in case of False
+add r5 r5 r6				# True. Increment array tracker
+add r7 r7 r6				# Increment counter
+jr r0 4					# Jump back to beginning of loop (zero + 4 instruction)
+	# Re-iteration of loop
+
+lw r5 r1 0 			# Load new smallest element in r1
+add r5 r5 r6			# Increment array tracker
+add r7 r7 r6			# Increment counter
+jr r0 4				# Jump back to beginning of loop (zero + 4 instruction)
+
+sw r4 r1 1 			# Store biggest element in place 20
+DATAMEM
+0
+0
+5		
+88	# Beginning of Array
+-6
+42
+-84
+-51
+27
+0
+512
+-200
+
+
+CHECKMEM
+r1: -200
+END

@@ -1,0 +1,193 @@
+#test 1 (lw)
+
+LOADMEM
+lw r0 r1 4 
+lw r0 r2 5
+lw r0 r3 6
+DATAMEM
+10
+20
+30
+CHECKMEM
+r1: 10
+r2: 20
+r3: 30
+pc: 3
+END
+
+
+#test 2 (add)
+
+LOADMEM
+lw r0 r1 4   # loads a[0] into r1
+lw r0 r2 5   # loads a[1] into r2
+add r3 r1 r2    # put a[0]+a[1] into r3
+DATAMEM
+1024
+-1
+CHECKMEM
+r1: 1024
+r2: -1
+r3: 1023
+pc: 3
+END
+
+
+#test3 (sw)
+
+LOADMEM
+lw r0 r1 4
+sw r0 r1 5
+lw r0 r2 5
+DATAMEM
+42
+CHECKMEM
+r1: 42
+r2: 42
+pc: 3
+END
+
+
+#test4 (lw)
+
+LOADMEM
+lw r0 r2 3
+lw r2 r1 0
+DATAMEM
+4
+10
+CHECKMEM
+r2: 4
+r1: 10
+pc: 2
+END
+
+
+#test5 (gt,lt)
+
+LOADMEM
+lw r0 r1 7 
+lw r0 r2 8
+gt r3 r1 r2
+lt r4 r2 r1
+gt r5 r2 r1
+lt r6 r1 r2
+DATAMEM
+40
+10
+CHECKMEM
+r1: 40
+r2: 10
+r3: 1
+r4: 1
+r5: 0
+r6: 0
+pc: 6
+END
+
+
+#test6 (zero)
+
+LOADMEM
+lw r0 r1 3 
+zero r1
+DATAMEM
+40
+CHECKMEM
+r1: 0
+END
+
+
+#test7 (and, or, not)
+
+LOADMEM
+lw r0 r1 6
+lw r0 r2 7
+and r3 r1 r2
+or r4 r1 r2
+not r5 r1
+DATAMEM
+-21846 #1010 1010 1010 1010
+-28087 #1001 0010 0100 1001
+CHECKMEM
+r3: -32248 #1000 0010 0000 1000 
+r4: -17685 #1011 1010 1110 1011 
+r5: 21845  #0101 0101 0101 0101
+END
+
+
+#test8 (inv)
+
+LOADMEM
+lw r0 r1 3
+inv r2 r1
+DATAMEM
+-5764 
+CHECKMEM
+r2: 5764
+END
+
+
+#test9 (eq)
+
+LOADMEM
+lw r0 r1 6
+lw r0 r2 6
+eq r3 r1 r2
+lw r0 r2 7
+eq r4 r1 r2
+DATAMEM
+20
+50
+CHECKMEM
+r3: 1
+r4: 0
+END
+
+#test10 (lui/ori)
+
+LOADMEM
+lui r1 1
+ori r1 3
+DATAMEM
+0
+CHECKMEM
+r1: 259
+END
+
+#test11 (jr/jal)
+
+LOADMEM
+lw r0 r1 9   # loads a[0] into r1
+lw r0 r2 10   # loads a[1] into r2
+add r3 r1 r2    # put a[0]+a[1] into r3
+jr r0 5
+add r3 r3 r2
+add r3 r3 r2
+add r3 r3 r2
+jal 30
+DATAMEM
+1024
+-1
+CHECKMEM
+r3: 1021
+r15:8
+pc: 30
+END
+
+#test12(bne)
+
+LOADMEM
+lw r0 r1 6
+lw r0 r2 7
+add r3 r3 r2
+bne r1 r3 -2
+bne r1 r2 7
+DATAMEM
+10
+1
+CHECKMEM
+r3: 10
+pc: 12
+
+

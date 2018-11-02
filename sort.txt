@@ -1,0 +1,71 @@
+LOADMEM
+# r1 = size of array
+# r2, r3 = twee swap waarden
+# r4, r5 = de twee adressen van de swap waarden
+# r6 = temp waarde voor swap
+# r7 = check voor groter dan
+# r8 = 1
+# r9 = counter
+# r10 = start heap
+# r11 = -1
+
+
+ori r8 1
+ori r10 28
+ori r4 28
+ori r5 28
+lw r10 r11 1
+lw r10 r1 3
+add r1 r1 r11
+
+
+lw r10 r4 2
+lw r10 r5 2
+lw r10 r9 0
+
+add r9 r9 r8
+lw r4 r2 2
+lw r5 r3 3
+
+lt r7 r2 r3 	#kijken of eerste swap waarde kleiner is dan de tweede als dit niet zo is moet er een swap worden gedaan
+bne r0 r7 3	#spring voorbij swap 
+
+#begin swap
+
+add r6 r2 r0	# steek waarde 1 in temp
+add r2 r3 r0	# steek waarde 2 in 1
+add r3 r6 r0	# steek waarde temp in 2
+
+#einde swap
+
+sw r4 r2 2
+sw r5 r3 3
+
+add r4 r4 r8
+add r5 r5 r8
+
+bne r0 r11 2
+
+jr r0 7
+
+jr r0 10
+
+bne r9 r1 -2
+
+add r1 r1 r11
+bne r1 r0 -5
+DATAMEM
+-1
+30
+8 #size of array
+8 #start array
+5
+3
+4
+1
+6
+7
+8
+
+
+
