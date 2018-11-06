@@ -1,6 +1,6 @@
-# arithmetic and logic (ALU)
+# arithmetic logic unit en datapath(ALU)
 
-### Project waarbij virtueel electronica word nagebouwt die een arithmetic and logic unit simuleren waarop assembly code kan worden uitgevoert.
+### Project waarbij virtueel electronica wordt nagebouwd die een arithmetic logic unit simuleren waarop assembly code kan worden uitgevoert.
 
 ## Instructies
 * **ADD/MIN/Mul:** Basis algebraische instructies.
